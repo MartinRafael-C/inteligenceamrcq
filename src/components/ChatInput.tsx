@@ -1,7 +1,12 @@
 import React, { useState } from 'react';
 import { View, TextInput, TouchableOpacity, Text, ActivityIndicator } from 'react-native';
 
-const ChatInput = ({ onSend, isLoading }) => {
+interface ChatInputProps {
+  onSend: (message: string) => void;
+  isLoading: boolean;
+}
+
+const ChatInput: React.FC<ChatInputProps> = ({ onSend, isLoading }) => {
   const [message, setMessage] = useState('');
 
   const handleSend = () => {

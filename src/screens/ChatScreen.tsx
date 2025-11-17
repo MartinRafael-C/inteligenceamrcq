@@ -13,8 +13,15 @@ import Message from '../components/Message';
 import ChatInput from '../components/ChatInput';
 import { sendMessageToGemini } from '../services/geminiService';
 
-const ChatScreen = () => {
-  const [messages, setMessages] = useState([
+interface MessageType {
+  id: string;
+  text: string;
+  isUser: boolean;
+  timestamp: string;
+}
+
+const ChatScreen: React.FC = () => {
+  const [messages, setMessages] = useState<MessageType[]>([
     {
       id: '1',
       text: '¡Hola! Soy tu asistente virtual con Gemini AI. ¿En qué puedo ayudarte hoy?',
@@ -23,9 +30,8 @@ const ChatScreen = () => {
     }
   ]);
   const [isLoading, setIsLoading] = useState(false);
-  const flatListRef = useRef(null);
+  const flatListRef = useRef<FlatList>(null);
 
-  // Auto-scroll al final cuando llegan nuevos mensajes
   useEffect(() => {
     if (messages.length > 0) {
       setTimeout(() => {
@@ -34,9 +40,8 @@ const ChatScreen = () => {
     }
   }, [messages]);
 
-  const handleSend = async (text) => {
-    // Agregar mensaje del usuario
-    const userMessage = {
+  const handleSend = async (text: string) => {
+    const userMessage: MessageType = {
       id: Date.now().toString(),
       text,
       isUser: true,
@@ -47,11 +52,9 @@ const ChatScreen = () => {
     setIsLoading(true);
 
     try {
-      // Enviar a Gemini AI
       const response = await sendMessageToGemini(text);
 
-      // Agregar respuesta del bot
-      const botMessage = {
+      const botMessage: MessageType = {
         id: (Date.now() + 1).toString(),
         text: response,
         isUser: false,
@@ -67,8 +70,7 @@ const ChatScreen = () => {
         [{ text: 'OK' }]
       );
       
-      // Mensaje de error
-      const errorMessage = {
+      const errorMessage: MessageType = {
         id: (Date.now() + 1).toString(),
         text: 'Lo siento, tuve un problema al procesar tu mensaje. ¿Puedes intentar de nuevo?',
         isUser: false,
@@ -102,13 +104,12 @@ const ChatScreen = () => {
     );
   };
 
-  const renderMessage = ({ item }) => (
+  const renderMessage = ({ item }: { item: MessageType }) => (
     <Message message={item} isUser={item.isUser} />
   );
 
   return (
     <SafeAreaView className="flex-1 bg-white">
-      {/* Header */}
       <View className="bg-blue-500 px-4 py-4 flex-row justify-between items-center">
         <View>
           <Text className="text-white text-xl font-bold">Gemini Chat</Text>
@@ -127,7 +128,6 @@ const ChatScreen = () => {
         className="flex-1"
         keyboardVerticalOffset={Platform.OS === 'ios' ? 0 : 0}
       >
-        {/* Lista de mensajes */}
         <FlatList
           ref={flatListRef}
           data={messages}
@@ -140,7 +140,6 @@ const ChatScreen = () => {
           }}
         />
 
-        {/* Input */}
         <ChatInput onSend={handleSend} isLoading={isLoading} />
       </KeyboardAvoidingView>
     </SafeAreaView>
