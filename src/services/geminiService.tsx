@@ -1,4 +1,4 @@
-import { GEMINI_API_KEY } from 'env';
+import { GEMINI_API_KEY } from '@env';
 
 const GEMINI_API_URL = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent';
 
